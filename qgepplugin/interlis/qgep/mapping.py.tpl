@@ -19,13 +19,14 @@ QGEP_TO_ABWASSER = {
     QGEP.cover: [ABWASSER.deckel, ABWASSER.metaattribute],
     QGEP.benching: [ABWASSER.bankett, ABWASSER.metaattribute],
     QGEP.examination: [ABWASSER.untersuchung, ABWASSER.metaattribute],
+    QGEP.re_maintenance_event_wastewater_structure: [ABWASSER.erhaltungsereignis_abwasserbauwerkassoc],
     QGEP.damage_manhole: [ABWASSER.normschachtschaden, ABWASSER.metaattribute],
     QGEP.damage_channel: [ABWASSER.kanalschaden, ABWASSER.metaattribute],
     QGEP.data_media: [ABWASSER.datentraeger, ABWASSER.metaattribute],
     QGEP.file: [ABWASSER.datei, ABWASSER.metaattribute],
 
     # AVAILABLE TABLES
-    # ABWASSER.abwasserbauwerk, ABWASSER.abwasserknoten, ABWASSER.abwassernetzelement, ABWASSER.bankett, ABWASSER.baseclass, ABWASSER.bauwerksteil, ABWASSER.datei, ABWASSER.datentraeger, ABWASSER.deckel, ABWASSER.einleitstelle, ABWASSER.einstiegshilfe, ABWASSER.erhaltungsereignis, ABWASSER.haltung, ABWASSER.haltung_alternativverlauf, ABWASSER.haltungspunkt, ABWASSER.kanal, ABWASSER.kanalschaden, ABWASSER.metaattribute, ABWASSER.normschacht, ABWASSER.normschachtschaden, ABWASSER.organisation, ABWASSER.organisation_teil_vonassoc, ABWASSER.rohrprofil, ABWASSER.schaden, ABWASSER.sia405_baseclass, ABWASSER.sia405_symbolpos, ABWASSER.sia405_textpos, ABWASSER.spezialbauwerk, ABWASSER.symbolpos, ABWASSER.t_ili2db_attrname, ABWASSER.t_ili2db_basket, ABWASSER.t_ili2db_classname, ABWASSER.t_ili2db_dataset, ABWASSER.t_ili2db_inheritance, ABWASSER.t_ili2db_model, ABWASSER.t_ili2db_settings, ABWASSER.textpos, ABWASSER.trockenwetterfallrohr, ABWASSER.trockenwetterrinne, ABWASSER.untersuchung, ABWASSER.versickerungsanlage, ABWASSER.videozaehlerstand
+    # ABWASSER.abwasserbauwerk, ABWASSER.abwasserknoten, ABWASSER.abwassernetzelement, ABWASSER.bankett, ABWASSER.baseclass, ABWASSER.bauwerksteil, ABWASSER.datei, ABWASSER.datentraeger, ABWASSER.deckel, ABWASSER.einleitstelle, ABWASSER.einstiegshilfe, ABWASSER.erhaltungsereignis, ABWASSER.erhaltungsereignis_abwasserbauwerkassoc, ABWASSER.haltung, ABWASSER.haltung_alternativverlauf, ABWASSER.haltungspunkt, ABWASSER.kanal, ABWASSER.kanalschaden, ABWASSER.metaattribute, ABWASSER.normschacht, ABWASSER.normschachtschaden, ABWASSER.organisation, ABWASSER.organisation_teil_vonassoc, ABWASSER.rohrprofil, ABWASSER.schaden, ABWASSER.sia405_baseclass, ABWASSER.sia405_symbolpos, ABWASSER.sia405_textpos, ABWASSER.spezialbauwerk, ABWASSER.symbolpos, ABWASSER.t_ili2db_attrname, ABWASSER.t_ili2db_basket, ABWASSER.t_ili2db_classname, ABWASSER.t_ili2db_dataset, ABWASSER.t_ili2db_inheritance, ABWASSER.t_ili2db_model, ABWASSER.t_ili2db_settings, ABWASSER.textpos, ABWASSER.trockenwetterfallrohr, ABWASSER.trockenwetterrinne, ABWASSER.untersuchung, ABWASSER.versickerungsanlage, ABWASSER.videozaehlerstand
 
     # NOT YET MAPPED
     # QGEP.access_aid_kind: [ABWASSER.REPLACE_ME],
@@ -168,7 +169,6 @@ QGEP_TO_ABWASSER = {
     # QGEP.pump_placement_of_actuation: [ABWASSER.REPLACE_ME],
     # QGEP.pump_placement_of_pump: [ABWASSER.REPLACE_ME],
     # QGEP.pump_usage_current: [ABWASSER.REPLACE_ME],
-    # QGEP.re_maintenance_event_wastewater_structure: [ABWASSER.REPLACE_ME],
     # QGEP.reach_elevation_determination: [ABWASSER.REPLACE_ME],
     # QGEP.reach_horizontal_positioning: [ABWASSER.REPLACE_ME],
     # QGEP.reach_inside_coating: [ABWASSER.REPLACE_ME],

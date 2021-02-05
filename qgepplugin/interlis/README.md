@@ -32,16 +32,6 @@ We recieve data from a TV inspection company as a Wincan exported .xtf file. We 
 python -m interlis --recreate_schema --import_xtf interlis\data\test_without_abwasserbauwerkref.xtf qgep
 ```
 
-## Code use
+## Known issues
 
-```python
-import interlis
-from sqlalchemy.orm import Session
-from interlis.qgep.model_qgep import QGEP
-
-engine = interlis.utils.sqlalchemy.create_engine()
-session = Session(engine, autocommit=False, autoflush=False)
-
-examination = session.query(QGEP.examination).first()
-dir(examination)
-```
+- [ ] Second time it is use, "create_ili_schema" hangs, probably because there's a session left open somewhere making the drop schema hang ? Or conflict with QGIS handlers ?

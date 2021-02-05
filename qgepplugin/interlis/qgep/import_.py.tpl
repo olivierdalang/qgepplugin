@@ -68,7 +68,7 @@ def import_():
         # bettung_umhuellung, funktionhierarchisch, funktionhydraulisch, nutzungsart_geplant, nutzungsart_ist, rohrlaenge, spuelintervall, t_id, verbindungsart
 
         # --- _bwrel_ ---
-        # abwassernetzelement__BWREL_abwasserbauwerkref, bauwerksteil__BWREL_abwasserbauwerkref, erhaltungsereignis__BWREL_abwasserbauwerkref, haltung_alternativverlauf__BWREL_t_id, metaattribute__BWREL_sia405_baseclass_metaattribute, sia405_symbolpos__BWREL_abwasserbauwerkref, sia405_textpos__BWREL_abwasserbauwerkref, symbolpos__BWREL_t_id, textpos__BWREL_t_id
+        # abwassernetzelement__BWREL_abwasserbauwerkref, bauwerksteil__BWREL_abwasserbauwerkref, erhaltungsereignis_abwasserbauwerkassoc__BWREL_abwasserbauwerkref, haltung_alternativverlauf__BWREL_t_id, metaattribute__BWREL_sia405_baseclass_metaattribute, sia405_symbolpos__BWREL_abwasserbauwerkref, sia405_textpos__BWREL_abwasserbauwerkref, symbolpos__BWREL_t_id, textpos__BWREL_t_id
 
         # --- _rel_ ---
         # betreiberref__REL, eigentuemerref__REL
@@ -153,7 +153,7 @@ def import_():
         # dimension1, dimension2, funktion, material, oberflaechenzulauf, t_id
 
         # --- _bwrel_ ---
-        # abwassernetzelement__BWREL_abwasserbauwerkref, bauwerksteil__BWREL_abwasserbauwerkref, erhaltungsereignis__BWREL_abwasserbauwerkref, haltung_alternativverlauf__BWREL_t_id, metaattribute__BWREL_sia405_baseclass_metaattribute, sia405_symbolpos__BWREL_abwasserbauwerkref, sia405_textpos__BWREL_abwasserbauwerkref, symbolpos__BWREL_t_id, textpos__BWREL_t_id
+        # abwassernetzelement__BWREL_abwasserbauwerkref, bauwerksteil__BWREL_abwasserbauwerkref, erhaltungsereignis_abwasserbauwerkassoc__BWREL_abwasserbauwerkref, haltung_alternativverlauf__BWREL_t_id, metaattribute__BWREL_sia405_baseclass_metaattribute, sia405_symbolpos__BWREL_abwasserbauwerkref, sia405_textpos__BWREL_abwasserbauwerkref, symbolpos__BWREL_t_id, textpos__BWREL_t_id
 
         # --- _rel_ ---
         # betreiberref__REL, eigentuemerref__REL
@@ -236,7 +236,7 @@ def import_():
         # hochwasserkote, relevanz, t_id, terrainkote, wasserspiegel_hydraulik
 
         # --- _bwrel_ ---
-        # abwassernetzelement__BWREL_abwasserbauwerkref, bauwerksteil__BWREL_abwasserbauwerkref, erhaltungsereignis__BWREL_abwasserbauwerkref, haltung_alternativverlauf__BWREL_t_id, metaattribute__BWREL_sia405_baseclass_metaattribute, sia405_symbolpos__BWREL_abwasserbauwerkref, sia405_textpos__BWREL_abwasserbauwerkref, symbolpos__BWREL_t_id, textpos__BWREL_t_id
+        # abwassernetzelement__BWREL_abwasserbauwerkref, bauwerksteil__BWREL_abwasserbauwerkref, erhaltungsereignis_abwasserbauwerkassoc__BWREL_abwasserbauwerkref, haltung_alternativverlauf__BWREL_t_id, metaattribute__BWREL_sia405_baseclass_metaattribute, sia405_symbolpos__BWREL_abwasserbauwerkref, sia405_textpos__BWREL_abwasserbauwerkref, symbolpos__BWREL_t_id, textpos__BWREL_t_id
 
         # --- _rel_ ---
         # betreiberref__REL, eigentuemerref__REL
@@ -319,7 +319,7 @@ def import_():
         # bypass, funktion, notueberlauf, regenbecken_anordnung, t_id
 
         # --- _bwrel_ ---
-        # abwassernetzelement__BWREL_abwasserbauwerkref, bauwerksteil__BWREL_abwasserbauwerkref, erhaltungsereignis__BWREL_abwasserbauwerkref, haltung_alternativverlauf__BWREL_t_id, metaattribute__BWREL_sia405_baseclass_metaattribute, sia405_symbolpos__BWREL_abwasserbauwerkref, sia405_textpos__BWREL_abwasserbauwerkref, symbolpos__BWREL_t_id, textpos__BWREL_t_id
+        # abwassernetzelement__BWREL_abwasserbauwerkref, bauwerksteil__BWREL_abwasserbauwerkref, erhaltungsereignis_abwasserbauwerkassoc__BWREL_abwasserbauwerkref, haltung_alternativverlauf__BWREL_t_id, metaattribute__BWREL_sia405_baseclass_metaattribute, sia405_symbolpos__BWREL_abwasserbauwerkref, sia405_textpos__BWREL_abwasserbauwerkref, symbolpos__BWREL_t_id, textpos__BWREL_t_id
 
         # --- _rel_ ---
         # betreiberref__REL, eigentuemerref__REL
@@ -401,7 +401,7 @@ def import_():
         # art, beschriftung, dimension1, dimension2, gwdistanz, maengel, notueberlauf, saugwagen, schluckvermoegen, t_id, versickerungswasser, wasserdichtheit, wirksameflaeche
 
         # --- _bwrel_ ---
-        # abwassernetzelement__BWREL_abwasserbauwerkref, bauwerksteil__BWREL_abwasserbauwerkref, erhaltungsereignis__BWREL_abwasserbauwerkref, haltung_alternativverlauf__BWREL_t_id, metaattribute__BWREL_sia405_baseclass_metaattribute, sia405_symbolpos__BWREL_abwasserbauwerkref, sia405_textpos__BWREL_abwasserbauwerkref, symbolpos__BWREL_t_id, textpos__BWREL_t_id
+        # abwassernetzelement__BWREL_abwasserbauwerkref, bauwerksteil__BWREL_abwasserbauwerkref, erhaltungsereignis_abwasserbauwerkassoc__BWREL_abwasserbauwerkref, haltung_alternativverlauf__BWREL_t_id, metaattribute__BWREL_sia405_baseclass_metaattribute, sia405_symbolpos__BWREL_abwasserbauwerkref, sia405_textpos__BWREL_abwasserbauwerkref, symbolpos__BWREL_t_id, textpos__BWREL_t_id
 
         # --- _rel_ ---
         # betreiberref__REL, eigentuemerref__REL
@@ -961,16 +961,16 @@ def import_():
         # obj_id
 
         # --- erhaltungsereignis ---
-        # abwasserbauwerkref, art, astatus, ausfuehrende_firmaref, ausfuehrender, bemerkung, bezeichnung, datengrundlage, dauer, detaildaten, ergebnis, grund, kosten, zeitpunkt
+        # art, astatus, ausfuehrende_firmaref, ausfuehrender, bemerkung, bezeichnung, datengrundlage, dauer, detaildaten, ergebnis, grund, kosten, zeitpunkt
 
         # --- untersuchung ---
         # bispunktbezeichnung, erfassungsart, fahrzeug, geraet, haltungspunktref, inspizierte_laenge, t_id, videonummer, vonpunktbezeichnung, witterung
 
         # --- _bwrel_ ---
-        # haltung_alternativverlauf__BWREL_t_id, metaattribute__BWREL_sia405_baseclass_metaattribute, schaden__BWREL_untersuchungref, symbolpos__BWREL_t_id, textpos__BWREL_t_id
+        # erhaltungsereignis_abwasserbauwerkassoc__BWREL_erhaltungsereignis_abwasserbauwerkassocref, haltung_alternativverlauf__BWREL_t_id, metaattribute__BWREL_sia405_baseclass_metaattribute, schaden__BWREL_untersuchungref, symbolpos__BWREL_t_id, textpos__BWREL_t_id
 
         # --- _rel_ ---
-        # abwasserbauwerkref__REL, ausfuehrende_firmaref__REL, haltungspunktref__REL
+        # ausfuehrende_firmaref__REL, haltungspunktref__REL
 
         # AVAILABLE FIELDS IN metaattribute
 
@@ -1015,6 +1015,29 @@ def import_():
             # weather=row.REPLACE_ME,
         )
         qgep_session.add(examination)
+        print(".", end="")
+    print("done")
+
+    print("Importing ABWASSER.erhaltungsereignis_abwasserbauwerkassoc -> QGEP.re_maintenance_event_wastewater_structure")
+    for row in abwasser_session.query(ABWASSER.erhaltungsereignis_abwasserbauwerkassoc):
+
+        # AVAILABLE FIELDS IN erhaltungsereignis_abwasserbauwerkassoc
+
+        # --- erhaltungsereignis_abwasserbauwerkassoc ---
+        # abwasserbauwerkref, erhaltungsereignis_abwasserbauwerkassocref, t_id, t_ili_tid
+
+        # --- _rel_ ---
+        # abwasserbauwerkref__REL, erhaltungsereignis_abwasserbauwerkassocref__REL
+
+        re_maintenance_event_wastewater_structure = QGEP.re_maintenance_event_wastewater_structure(
+            # FIELDS TO MAP TO QGEP.re_maintenance_event_wastewater_structure
+
+            # --- re_maintenance_event_wastewater_structure ---
+            # fk_maintenance_event=row.REPLACE_ME,
+            # fk_wastewater_structure=row.REPLACE_ME,
+            # obj_id=row.REPLACE_ME,
+        )
+        qgep_session.add(re_maintenance_event_wastewater_structure)
         print(".", end="")
     print("done")
 

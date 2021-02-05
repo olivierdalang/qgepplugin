@@ -1013,17 +1013,18 @@ def import_(precommit_callback=None):
             weather=get_vl_code(QGEP.examination_weather, row.witterung),
         )
         qgep_session.add(examination)
+        print(".", end="")
+    print("done")
 
-        # In QGEP, relation between maintenance_event and wastewater_structure is done with
-        # an association table instead of a foreign key on maintenance_event.
-        if row.abwasserbauwerkref:
-            # TODO : for dangling references (partial imports), we may have abwasserbauwerkref without abwasserbauwerkref_REL
-            exam_to_wastewater_structure = QGEP.re_maintenance_event_wastewater_structure(
-                fk_wastewater_structure=row.abwasserbauwerkref,
-                fk_maintenance_event=row.obj_id,
-            )
-            qgep_session.add(exam_to_wastewater_structure)
-
+    print("Importing ABWASSER.erhaltungsereignis_abwasserbauwerkassoc -> QGEP.re_maintenance_event_wastewater_structure")
+    for row in abwasser_session.query(ABWASSER.erhaltungsereignis_abwasserbauwerkassoc):
+        re_maintenance_event_wastewater_structure = QGEP.re_maintenance_event_wastewater_structure(
+            # --- re_maintenance_event_wastewater_structure ---
+            fk_maintenance_event=row.erhaltungsereignis_abwasserbauwerkassocref__REL.obj_id,
+            fk_wastewater_structure=row.abwasserbauwerkref__REL.obj_id,
+            obj_id=row.obj_id,
+        )
+        qgep_session.add(re_maintenance_event_wastewater_structure)
         print(".", end="")
     print("done")
 

@@ -807,7 +807,6 @@ def export():
             # obj_id=row.REPLACE_ME,
 
             # --- erhaltungsereignis ---
-            # abwasserbauwerkref=row.REPLACE_ME,
             # art=row.REPLACE_ME,
             # astatus=row.REPLACE_ME,
             # ausfuehrende_firmaref=row.REPLACE_ME,
@@ -836,6 +835,30 @@ def export():
         )
         abwasser_session.add(untersuchung)
         create_metaattributes(row, session)
+        print(".", end="")
+    print("done")
+
+    print("Exporting QGEP.re_maintenance_event_wastewater_structure -> ABWASSER.erhaltungsereignis_abwasserbauwerkassoc")
+    for row in qgep_session.query(QGEP.re_maintenance_event_wastewater_structure):
+
+        # AVAILABLE FIELDS IN QGEP.re_maintenance_event_wastewater_structure
+
+        # --- re_maintenance_event_wastewater_structure ---
+        # fk_maintenance_event, fk_wastewater_structure, obj_id
+
+        # --- _rel_ ---
+        # fk_maintenance_event__REL, fk_wastewater_structure__REL
+
+        erhaltungsereignis_abwasserbauwerkassoc = ABWASSER.erhaltungsereignis_abwasserbauwerkassoc(
+            # FIELDS TO MAP TO ABWASSER.erhaltungsereignis_abwasserbauwerkassoc
+
+            # --- erhaltungsereignis_abwasserbauwerkassoc ---
+            # abwasserbauwerkref=row.REPLACE_ME,
+            # erhaltungsereignis_abwasserbauwerkassocref=row.REPLACE_ME,
+            # t_id=row.REPLACE_ME,
+            # t_ili_tid=row.REPLACE_ME,
+        )
+        abwasser_session.add(erhaltungsereignis_abwasserbauwerkassoc)
         print(".", end="")
     print("done")
 
