@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import inspect
 from geoalchemy2.functions import ST_Transform, ST_Force2D, ST_CurveToLine
 import warnings
+import logging
 
 from .. import utils
 
@@ -36,7 +37,7 @@ def qgep_export():
         return relation.value_de
 
     def create_metaattributes(row):
-        metaattribute = ABWASSER.metaattribute(
+        return dict(
             # FIELDS TO MAP TO ABWASSER.metaattribute
             # --- metaattribute ---
             datenherr=getattr(row.fk_dataowner__REL, "name", 'unknown'),  # TODO : is unknown ok ?
@@ -47,7 +48,6 @@ def qgep_export():
             t_id=get_tid(row),
             t_seq=0,
         )
-        abwasser_session.add(metaattribute)
 
     def base_common(row, type_name):
         """
@@ -76,7 +76,7 @@ def qgep_export():
             'betreiberref': get_tid(row.fk_operator__REL),
             'bezeichnung': row.identifier,
             'bruttokosten': row.gross_costs,
-            'detailgeometrie': ST_Force2D(row.detail_geometry_geometry),
+            # 'detailgeometrie': ST_Force2D(row.detail_geometry_geometry),
             'eigentuemerref': get_tid(row.fk_owner__REL),
             'ersatzjahr': row.year_of_replacement,
             'finanzierung': row.financing,
@@ -115,6 +115,8 @@ def qgep_export():
     # ADAPTED FROM 052a_sia405_abwasser_2015_2_d_interlisexport2.sql
 
     print("Exporting QGEP.organisation -> ABWASSER.organisation, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.organisation):
 
         # AVAILABLE FIELDS IN QGEP.organisation
@@ -128,7 +130,7 @@ def qgep_export():
         # --- _rel_ ---
         # fk_dataowner__REL, fk_provider__REL
 
-        organisation = ABWASSER.organisation(
+        instances.append(dict(
             # FIELDS TO MAP TO ABWASSER.organisation
 
             # --- baseclass ---
@@ -139,14 +141,17 @@ def qgep_export():
             auid=row.uid,
             bemerkung=row.remark,
             bezeichnung=row.identifier,
-        )
-        abwasser_session.add(organisation)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.organisation, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.channel -> ABWASSER.kanal, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.channel):
 
         # AVAILABLE FIELDS IN QGEP.channel
@@ -161,7 +166,7 @@ def qgep_export():
         # --- _rel_ ---
         # accessibility__REL, bedding_encasement__REL, connection_type__REL, financing__REL, fk_dataowner__REL, fk_main_cover__REL, fk_main_wastewater_node__REL, fk_operator__REL, fk_owner__REL, fk_provider__REL, function_hierarchic__REL, function_hydraulic__REL, renovation_necessity__REL, rv_construction_type__REL, status__REL, structure_condition__REL, usage_current__REL, usage_planned__REL
 
-        kanal = ABWASSER.kanal(
+        instances.append(dict(
             # FIELDS TO MAP TO ABWASSER.kanal
 
             # --- baseclass ---
@@ -180,16 +185,19 @@ def qgep_export():
             rohrlaenge=row.pipe_length,
             spuelintervall=row.jetting_interval,
             verbindungsart=get_vl(row.connection_type__REL),
-        )
-        abwasser_session.add(kanal)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.kanal, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.manhole -> ABWASSER.normschacht, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.manhole):
-        normschacht = ABWASSER.normschacht(
+        instances.append(dict(
             # --- baseclass ---
             # --- sia405_baseclass ---
             **base_common(row, "normschacht"),
@@ -203,16 +211,19 @@ def qgep_export():
             funktion=get_vl(row.function__REL),
             material=get_vl(row.material__REL),
             oberflaechenzulauf=get_vl(row.surface_inflow__REL),
-        )
-        abwasser_session.add(normschacht)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.normschacht, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.discharge_point -> ABWASSER.einleitstelle, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.discharge_point):
-        einleitstelle = ABWASSER.einleitstelle(
+        instances.append(dict(
 
             # --- baseclass ---
             # --- sia405_baseclass ---
@@ -226,14 +237,17 @@ def qgep_export():
             relevanz=get_vl(row.relevance__REL),
             terrainkote=row.terrain_level,
             wasserspiegel_hydraulik=row.waterlevel_hydraulic,
-        )
-        abwasser_session.add(einleitstelle)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.einleitstelle, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.special_structure -> ABWASSER.spezialbauwerk, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.special_structure):
 
         # AVAILABLE FIELDS IN QGEP.special_structure
@@ -250,7 +264,7 @@ def qgep_export():
         # --- _rel_ ---
         # accessibility__REL, bypass__REL, emergency_spillway__REL, financing__REL, fk_dataowner__REL, fk_main_cover__REL, fk_main_wastewater_node__REL, fk_operator__REL, fk_owner__REL, fk_provider__REL, function__REL, renovation_necessity__REL, rv_construction_type__REL, status__REL, stormwater_tank_arrangement__REL, structure_condition__REL
         warnings.warn(f'QGEP field special_structure.upper_elevation has no equivalent in the interlis model. It will be ignored.')
-        spezialbauwerk = ABWASSER.spezialbauwerk(
+        instances.append(dict(
             # FIELDS TO MAP TO ABWASSER.spezialbauwerk
 
             # --- baseclass ---
@@ -266,14 +280,17 @@ def qgep_export():
             funktion=get_vl(row.function__REL),
             notueberlauf=get_vl(row.emergency_spillway__REL),
             regenbecken_anordnung=get_vl(row.stormwater_tank_arrangement__REL),
-        )
-        abwasser_session.add(spezialbauwerk)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.spezialbauwerk, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.infiltration_installation -> ABWASSER.versickerungsanlage, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.infiltration_installation):
 
         # AVAILABLE FIELDS IN QGEP.infiltration_installation
@@ -291,7 +308,7 @@ def qgep_export():
         # accessibility__REL, defects__REL, emergency_spillway__REL, financing__REL, fk_aquifier__REL, fk_dataowner__REL, fk_main_cover__REL, fk_main_wastewater_node__REL, fk_operator__REL, fk_owner__REL, fk_provider__REL, kind__REL, labeling__REL, renovation_necessity__REL, rv_construction_type__REL, seepage_utilization__REL, status__REL, structure_condition__REL, vehicle_access__REL, watertightness__REL
 
         warnings.warn(f'QGEP field infiltration_installation.upper_elevation has no equivalent in the interlis model. It will be ignored.')
-        versickerungsanlage = ABWASSER.versickerungsanlage(
+        instances.append(dict(
             # FIELDS TO MAP TO ABWASSER.versickerungsanlage
 
             # --- baseclass ---
@@ -315,14 +332,17 @@ def qgep_export():
             versickerungswasser=get_vl(row.seepage_utilization__REL),  # TODO : check mapping
             wasserdichtheit=get_vl(row.watertightness__REL),
             wirksameflaeche=row.effective_area,
-        )
-        abwasser_session.add(versickerungsanlage)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.versickerungsanlage, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.pipe_profile -> ABWASSER.rohrprofil, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.pipe_profile):
 
         # AVAILABLE FIELDS IN QGEP.pipe_profile
@@ -336,7 +356,7 @@ def qgep_export():
         # --- _rel_ ---
         # fk_dataowner__REL, fk_provider__REL, profile_type__REL
 
-        rohrprofil = ABWASSER.rohrprofil(
+        instances.append(dict(
             # FIELDS TO MAP TO ABWASSER.rohrprofil
 
             # --- baseclass ---
@@ -348,14 +368,17 @@ def qgep_export():
             bezeichnung=row.identifier,
             hoehenbreitenverhaeltnis=row.height_width_ratio,
             profiltyp=get_vl(row.profile_type__REL),
-        )
-        abwasser_session.add(rohrprofil)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.rohrprofil, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.reach_point -> ABWASSER.haltungspunkt, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.reach_point):
 
         # AVAILABLE FIELDS IN QGEP.reach_point
@@ -369,7 +392,7 @@ def qgep_export():
         # --- _rel_ ---
         # elevation_accuracy__REL, fk_dataowner__REL, fk_provider__REL, fk_wastewater_networkelement__REL, outlet_shape__REL
 
-        haltungspunkt = ABWASSER.haltungspunkt(
+        instances.append(dict(
             # FIELDS TO MAP TO ABWASSER.haltungspunkt
 
             # --- baseclass ---
@@ -383,16 +406,19 @@ def qgep_export():
             bezeichnung=row.identifier,
             hoehengenauigkeit=get_vl(row.elevation_accuracy__REL),
             kote=row.level,
-            lage=ST_Force2D(row.situation_geometry),
+            # lage=ST_Force2D(row.situation_geometry),
             lage_anschluss=row.position_of_connection,
-        )
-        abwasser_session.add(haltungspunkt)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.haltungspunkt, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.wastewater_node -> ABWASSER.abwasserknoten, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.wastewater_node):
 
         # AVAILABLE FIELDS IN QGEP.wastewater_node
@@ -409,7 +435,7 @@ def qgep_export():
         # fk_dataowner__REL, fk_hydr_geometry__REL, fk_provider__REL, fk_wastewater_structure__REL
 
         warnings.warn(f'QGEP field wastewater_node.fk_hydr_geometry has no equivalent in the interlis model. It will be ignored.')
-        abwasserknoten = ABWASSER.abwasserknoten(
+        instances.append(dict(
             # FIELDS TO MAP TO ABWASSER.abwasserknoten
 
             # --- baseclass ---
@@ -421,17 +447,20 @@ def qgep_export():
 
             # --- abwasserknoten ---
             # TODO : WARNING : fk_hydr_geometry is not mapped
-            lage=ST_Force2D(row.situation_geometry),
+            # lage=ST_Force2D(row.situation_geometry),
             rueckstaukote=row.backflow_level,
             sohlenkote=row.bottom_level,
-        )
-        abwasser_session.add(abwasserknoten)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.abwasserknoten, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.reach -> ABWASSER.haltung, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.reach):
 
         # AVAILABLE FIELDS IN QGEP.reach
@@ -449,7 +478,7 @@ def qgep_export():
         # elevation_determination__REL, fk_dataowner__REL, fk_pipe_profile__REL, fk_provider__REL, fk_reach_point_from__REL, fk_reach_point_to__REL, fk_wastewater_structure__REL, horizontal_positioning__REL, inside_coating__REL, material__REL, reliner_material__REL, relining_construction__REL, relining_kind__REL
 
         warnings.warn(f'QGEP field reach.elevation_determination has no equivalent in the interlis model. It will be ignored.')
-        haltung = ABWASSER.haltung(
+        instances.append(dict(
             # FIELDS TO MAP TO ABWASSER.haltung
 
             # --- baseclass ---
@@ -474,17 +503,20 @@ def qgep_export():
             reliner_nennweite=row.reliner_nominal_size,
             ringsteifigkeit=row.ring_stiffness,
             rohrprofilref=get_tid(row.fk_pipe_profile__REL),
-            verlauf=ST_Force2D(row.progression_geometry),
+            # verlauf=ST_Force2D(row.progression_geometry),
             vonhaltungspunktref=get_tid(row.fk_reach_point_from__REL),
             wandrauhigkeit=row.wall_roughness,
-        )
-        abwasser_session.add(haltung)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.haltung, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.dryweather_downspout -> ABWASSER.trockenwetterfallrohr, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.dryweather_downspout):
 
         # AVAILABLE FIELDS IN QGEP.dryweather_downspout
@@ -501,7 +533,7 @@ def qgep_export():
         # --- _rel_ ---
         # fk_dataowner__REL, fk_provider__REL, fk_wastewater_structure__REL, renovation_demand__REL
 
-        trockenwetterfallrohr = ABWASSER.trockenwetterfallrohr(
+        instances.append(dict(
             # FIELDS TO MAP TO ABWASSER.trockenwetterfallrohr
 
             # --- baseclass ---
@@ -513,14 +545,17 @@ def qgep_export():
 
             # --- trockenwetterfallrohr ---
             durchmesser=row.diameter,
-        )
-        abwasser_session.add(trockenwetterfallrohr)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.trockenwetterfallrohr, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.access_aid -> ABWASSER.einstiegshilfe, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.access_aid):
 
         # AVAILABLE FIELDS IN QGEP.access_aid
@@ -537,7 +572,7 @@ def qgep_export():
         # --- _rel_ ---
         # fk_dataowner__REL, fk_provider__REL, fk_wastewater_structure__REL, kind__REL, renovation_demand__REL
 
-        einstiegshilfe = ABWASSER.einstiegshilfe(
+        instances.append(dict(
             # FIELDS TO MAP TO ABWASSER.einstiegshilfe
 
             # --- baseclass ---
@@ -549,14 +584,17 @@ def qgep_export():
 
             # --- einstiegshilfe ---
             art=get_vl(row.kind__REL),
-        )
-        abwasser_session.add(einstiegshilfe)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.einstiegshilfe, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.dryweather_flume -> ABWASSER.trockenwetterrinne, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.dryweather_flume):
 
         # AVAILABLE FIELDS IN QGEP.dryweather_flume
@@ -573,7 +611,7 @@ def qgep_export():
         # --- _rel_ ---
         # fk_dataowner__REL, fk_provider__REL, fk_wastewater_structure__REL, material__REL, renovation_demand__REL
 
-        trockenwetterrinne = ABWASSER.trockenwetterrinne(
+        instances.append(dict(
             # FIELDS TO MAP TO ABWASSER.trockenwetterrinne
 
             # --- baseclass ---
@@ -585,14 +623,17 @@ def qgep_export():
 
             # --- trockenwetterrinne ---
             material=get_vl(row.material__REL),
-        )
-        abwasser_session.add(trockenwetterrinne)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.trockenwetterrinne, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.cover -> ABWASSER.deckel, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.cover):
 
         # AVAILABLE FIELDS IN QGEP.cover
@@ -609,7 +650,7 @@ def qgep_export():
         # --- _rel_ ---
         # cover_shape__REL, fastening__REL, fk_dataowner__REL, fk_provider__REL, fk_wastewater_structure__REL, material__REL, positional_accuracy__REL, renovation_demand__REL, sludge_bucket__REL, venting__REL
 
-        deckel = ABWASSER.deckel(
+        instances.append(dict(
             # FIELDS TO MAP TO ABWASSER.deckel
 
             # --- baseclass ---
@@ -625,19 +666,22 @@ def qgep_export():
             entlueftung=get_vl(row.venting__REL),
             fabrikat=row.brand,
             kote=row.level,
-            lage=ST_Force2D(row.situation_geometry),
+            # lage=ST_Force2D(row.situation_geometry),
             lagegenauigkeit=get_vl(row.positional_accuracy__REL),
             material=get_vl(row.material__REL),
             schlammeimer=get_vl(row.sludge_bucket__REL),
             verschluss=get_vl(row.fastening__REL),
-        )
-        abwasser_session.add(deckel)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.deckel, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.benching -> ABWASSER.bankett, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.benching):
 
         # AVAILABLE FIELDS IN QGEP.benching
@@ -654,7 +698,7 @@ def qgep_export():
         # --- _rel_ ---
         # fk_dataowner__REL, fk_provider__REL, fk_wastewater_structure__REL, kind__REL, renovation_demand__REL
 
-        bankett = ABWASSER.bankett(
+        instances.append(dict(
             # FIELDS TO MAP TO ABWASSER.bankett
 
             # --- baseclass ---
@@ -669,14 +713,17 @@ def qgep_export():
 
             # --- bankett ---
             art=get_vl(row.kind__REL),
-        )
-        abwasser_session.add(bankett)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.bankett, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.examination -> ABWASSER.untersuchung, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.examination):
 
         # AVAILABLE FIELDS IN QGEP.examination
@@ -692,7 +739,7 @@ def qgep_export():
         # fk_dataowner__REL, fk_operating_company__REL, fk_provider__REL, fk_reach_point__REL, kind__REL, recording_type__REL, status__REL, weather__REL
         warnings.warn(f'QGEP field maintenance_event.active_zone has no equivalent in the interlis model. It will be ignored.')
 
-        untersuchung = ABWASSER.untersuchung(
+        instances.append(dict(
             # FIELDS TO MAP TO ABWASSER.untersuchung
 
             # --- baseclass ---
@@ -725,14 +772,17 @@ def qgep_export():
             videonummer=row.videonumber,
             vonpunktbezeichnung=row.from_point_identifier,
             witterung=row.weather,
-        )
-        abwasser_session.add(untersuchung)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.untersuchung, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.damage_manhole -> ABWASSER.normschachtschaden, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.damage_manhole):
 
         # AVAILABLE FIELDS IN QGEP.damage_manhole
@@ -748,7 +798,7 @@ def qgep_export():
         # --- _rel_ ---
         # connection__REL, fk_dataowner__REL, fk_examination__REL, fk_provider__REL, manhole_damage_code__REL, manhole_shaft_area__REL, single_damage_class__REL
 
-        normschachtschaden = ABWASSER.normschachtschaden(
+        instances.append(dict(
             # FIELDS TO MAP TO ABWASSER.normschachtschaden
 
             # --- baseclass ---
@@ -772,14 +822,17 @@ def qgep_export():
             schachtschadencode=get_vl(row.manhole_damage_code__REL),
             schadenlageanfang=row.damage_begin,
             schadenlageende=row.damage_end,
-        )
-        abwasser_session.add(normschachtschaden)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.normschachtschaden, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.damage_channel -> ABWASSER.kanalschaden, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.damage_channel):
 
         # AVAILABLE FIELDS IN QGEP.damage_channel
@@ -796,7 +849,7 @@ def qgep_export():
         # --- _rel_ ---
         # channel_damage_code__REL, connection__REL, fk_dataowner__REL, fk_examination__REL, fk_provider__REL, single_damage_class__REL
 
-        kanalschaden = ABWASSER.kanalschaden(
+        instances.append(dict(
             # FIELDS TO MAP TO ABWASSER.kanalschaden
 
             # --- baseclass ---
@@ -819,14 +872,17 @@ def qgep_export():
             quantifizierung2=row.quantification2,
             schadenlageanfang=row.damage_begin,
             schadenlageende=row.damage_end,
-        )
-        abwasser_session.add(kanalschaden)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.kanalschaden, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.data_media -> ABWASSER.datentraeger, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.data_media):
 
         # AVAILABLE FIELDS IN QGEP.data_media
@@ -837,7 +893,7 @@ def qgep_export():
         # --- _rel_ ---
         # fk_dataowner__REL, fk_provider__REL, kind__REL
 
-        datentraeger = ABWASSER.datentraeger(
+        instances.append(dict(
             # FIELDS TO MAP TO ABWASSER.datentraeger
 
             # --- baseclass ---
@@ -850,14 +906,17 @@ def qgep_export():
             bezeichnung=row.identifier,
             pfad=row.path,
             standort=row.location,
-        )
-        abwasser_session.add(datentraeger)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.datentraeger, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
 
     print("Exporting QGEP.file -> ABWASSER.datei, ABWASSER.metaattribute")
+    instances = []
+    metas = []
     for row in qgep_session.query(QGEP.file):
 
         # AVAILABLE FIELDS IN QGEP.file
@@ -871,7 +930,7 @@ def qgep_export():
         # NOTE: QGEP misses a FK to data_media, so we inject it manually here
         row.data_media__REL = qgep_session.query(QGEP.data_media).get(row.fk_data_media)
 
-        datei = ABWASSER.datei(
+        instances.append(dict(
             # FIELDS TO MAP TO ABWASSER.datei
 
             # --- baseclass ---
@@ -886,12 +945,14 @@ def qgep_export():
             klasse=getattr(row, "class"),  # class is a python keyword, this is equivalent to `klasse=row.class`,
             objekt=row.object,
             relativpfad=row.path_relative,
-        )
-        abwasser_session.add(datei)
-        create_metaattributes(row)
+        ))
+        metas.append(create_metaattributes(row))
         print(".", end="")
     print("done")
+    abwasser_session.bulk_insert_mappings(ABWASSER.datei, instances, render_nulls=True)
+    abwasser_session.bulk_insert_mappings(ABWASSER.metaattribute, metas, render_nulls=True)
     abwasser_session.flush()
+
 
     abwasser_session.commit()
 
